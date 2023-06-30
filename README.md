@@ -25,6 +25,14 @@ Antibodies are versatile proteins that bind to pathogens like viruses (Antigens)
 </p>
 
 
+
+# Why model Antibody?
+De novo generation of new antibodies targeting specific antigens is key to accelerating vaccine discovery. However, thisnco-design of the amino acid sequence and the 3D structure subsumes and accentuates some central challenges from multiple tasks, including protein folding (sequence to structure), inverse folding (structure to sequence), and docking (binding). Moreover, there is a combinatorial search space of over $$20^{L} + $$ learning of joint distribution between Antibody and Antigen i.e. $$p(\texttt{Ab},\texttt{Ag})$$.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic2.png" />
+</p>
+
 # Continuous Normalizing Flows
 
 <p align="center">
