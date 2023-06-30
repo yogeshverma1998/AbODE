@@ -1,29 +1,27 @@
-*This website contains information regarding the paper Modular Flows: Differential Molecular Generation.*
+*This website contains information regarding the paper AbODE: Ab Initio Antibody Design using Conjoined ODEs.*
 
-> **TL;DR:** We propose generative graph normalizing flow models, based on a system of coupled node ODEs, that repeatedly reconcile locally toward globally aligned densities for high quality molecular generation
+> **TL;DR:** We propose a generative model for antibody design using conjoined interacting neural ODEs
 
 Please cite our work if you find it useful:
 
 ```
-@misc{https://doi.org/10.48550/arxiv.2210.06032,
-  doi = {10.48550/ARXIV.2210.06032},
-  url = {https://arxiv.org/abs/2210.06032},
-  author = {Verma, Yogesh and Kaski, Samuel and Heinonen, Markus and Garg, Vikas},
-  keywords = {Machine Learning (cs.LG), Emerging Technologies (cs.ET), Biomolecules (q-bio.BM), Machine Learning (stat.ML), FOS: Computer and information sciences, FOS: Computer and information sciences, FOS: Biological sciences, FOS: Biological sciences},
-  title = {Modular Flows: Differential Molecular Generation},
-  publisher = {arXiv},
-  year = {2022},
-  copyright = {Creative Commons Attribution 4.0 International}
+@misc{verma2023abode,
+      title={AbODE: Ab Initio Antibody Design using Conjoined ODEs}, 
+      author={Yogesh Verma and Markus Heinonen and Vikas Garg},
+      year={2023},
+      eprint={2306.01005},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG}
 }
 
 ```
 
-# Problem of Molecular Generation
+# What is an Antibody?
 
-Generating new molecules is fundamental to advancing critical applications such as drug discovery and material synthesis. A key challenge of molecular generative models is to be able to generate valid molecules, according to various criteria for molecular validity or feasibility. It is a common practice to use external chemical software as rejection oracles to reduce or exclude invalid molecules, or do validity checks as part of autoregressive generation [1,2,3] . An important open question has been whether generative models can learn to achieve high generative validity *intrinsically*, i.e., without being aided by oracles or performing additional checks. We circumvent the issues with novel physics-inspired co-evolving continuous-time flows that induces useful inductive biases for a highly complex combinatorial setting. Our method is inspired by graph PDEs, that repeatedly reconcile locally toward globally aligned densities. 
+Antibodies are versatile proteins that bind to pathogens like viruses (Antigens) and stimulate a response. Each antibody recognizes a unique antigen, and the so-called Complementarity Determining Regions (CDRs) at the tip of the antibody determines this specificity
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/slide_1_2.png" />
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic1.png" />
 </p>
 
 
@@ -181,24 +179,18 @@ We performed ablation experiments to gain further insights about **$$\texttt{Mod
 </p>
 
 # Conclusion
-> 1. We propose Physics-inspired co-evolving continuous-time flows, inspired by graph PDEs as $$\texttt{ModFlow}$$, where multiple flows interact locally according to a modular coupled ODE system. 
-> 2. The coupled dynamics results in accurate modeling of graph densities and high quality molecular generation without any validity checks or correction.
-> 3. Interesting avenues open up, including the design of (a) more nuanced mappings between discrete and continuous spaces, and (b) extensions of modular flows to (semi-)supervised settings.
+> 1. We propose AbODE, which models the antibody-antigen complex as a joint graph, and via a system of coupled residue-specific ODEs.
+> 2. AbODE is able to incorporate conditional contextual and spatial information in ODEs tailored for Antibody design.
 
 # References
 
 <ol>
-  <li>Youzhi Luo, Keqiang Yan, and Shuiwang Ji. Graphdf: A discrete flow model for molecular graph generation,2021</li>
-  <li>Chence Shi, Minkai Xu, Zhaocheng Zhu, Weinan Zhang, Ming Zhang, and Jian Tang. Graphaf: a flow-based autoregressive model for molecular graph generation</li>
-  <li>Mariya Popova, Mykhailo Shvets, Junier Oliva, and Olexandr Isayev. Molecularrnn: Generating realistic molecular graphs with optimized properties,2019 </li>
-  <li> Wengong Jin, Regina Barzilay, and Tommi Jaakkola. Junction tree variational autoencoder for molecular graph generation </li>
-  <li>John J Irwin, Teague Sterling, Michael M Mysinger, Erin S Bolstad, and Ryan G Coleman. Zinc: a free tool to discover chemistry for biology. Journal of chemical information and modeling, 52(7):1757–1768, 2012</li>
-  <li>Raghunathan Ramakrishnan, Pavlo O Dral, Matthias Rupp, and O Anatole von Lilienfeld. Quantum chemistry structures and properties of 134 kilo molecules. Scientific Data, 1, 2014</li>
-  <li> Will Grathwohl, Ricky TQ Chen, Jesse Bettencourt, Ilya Sutskever, and David Duvenaud. Ffjord: Free-form continuous dynamics for scalable reversible generative models</li>
-  <li>Greg Landrum et al. Rdkit: A software suite for cheminformatics, computational chemistry, and predictive modeling, 2013</li>
-  <li> Valerii Iakovlev, Markus Heinonen, and Harri Lähdesmäki. Learning continuous-time pdes from sparse data with graph neural networks.</li>
-  <li> Ben Chamberlain, James Rowbottom, Maria I Gorinova, Michael Bronstein, Stefan Webb, and Emanuele Rossi Grand: Graph neural diffusion. In International Conference on Machine Learning, pages 1407–1418. PMLR, 2021</li>
-  <li>Victor Garcia Satorras, Emiel Hoogeboom, and Max Welling. E(n) equivariant graph neural networks, 2021</li>
+  <li>Iterative refinement graph neural network for antibody sequence-structure co-design, ICLR 2022</li>
+  <li>Independent SE(3)-Equivariant Models for End-to-End Rigid Docking, ICLR 2022</li>
+  <li>Modular Flows: DIfferential Molecular Generation, NeurIPS 2023</li>
+  <li>Conditional Antibody Design as 3D Equivariant Graph Translation, ICLR 2023</li>
+  <li>Generative Models for Graph-based Protein Design, NeurIPS 2019</li>
+  <li>Neural Ordinary Differential Equations, NeurIPS 2018</li>
 </ol>
 
 
