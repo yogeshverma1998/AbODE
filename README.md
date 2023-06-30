@@ -18,16 +18,18 @@ Please cite our work if you find it useful:
 
 # What is an Antibody?
 
-Antibodies are versatile proteins that bind to pathogens like viruses (Antigens) and stimulate a response. Each antibody recognizes a unique antigen, and the so-called Complementarity Determining Regions (CDRs) at the tip of the antibody determines this specificity
+Antibodies are versatile proteins that bind to pathogens like viruses (Antigens) and stimulate a response. Each antibody recognizes a unique antigen, and the so-called Complementarity Determining Regions (CDRs) at the tip of the antibody determines this specificity.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic1.png" />
 </p>
-
+<p align="center">
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/work_ant.png" />
+</p>
 
 
 # Why model Antibody?
-De novo generation of new antibodies targeting specific antigens is key to accelerating vaccine discovery. However, thisnco-design of the amino acid sequence and the 3D structure subsumes and accentuates some central challenges from multiple tasks, including protein folding (sequence to structure), inverse folding (structure to sequence), and docking (binding). Moreover, there is a combinatorial search space of over $$20^{L} + $$ learning of joint distribution between Antibody and Antigen i.e. $$p(\texttt{Ab},\texttt{Ag})$$.
+De novo generation of new antibodies targeting specific antigens is key to accelerating vaccine discovery. However, this co-design of the amino acid sequence and the 3D structure subsumes and accentuates some central challenges from multiple tasks, including protein folding (sequence to structure), inverse folding (structure to sequence), and docking (binding). Moreover, there is a combinatorial search space of over $$20^{L} + $$ learning of joint distribution between Antibody and Antigen i.e. $$p(\texttt{Ab},\texttt{Ag})$$.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic2.png" />
