@@ -117,18 +117,18 @@ We capture the interactions between the antigen and antibody residues with graph
 We optimize our model jointly with loss consisting of two components: one for the sequence and another for the structure, as,
 
 <p align="center">
-    $$\mathcal{L} = \mathcal{L}_\mathrm{seq} + \mathcal{L}_\mathrm{structure}$$
+    $$L = L_\mathrm{seq} + L_\mathrm{structure}$$
 </p>
 
 where, 
 <p align="center">
-    $$\mathcal{L}_\mathrm{seq} = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{M}\sum_{i=1}^{M_i} \mathrm{CE}(\mathbf{a}_{ni}^{\mathrm{true}}, \mathbf{a}_{ni} ) \quad \mathcal{L}_{\mathrm{structure}} = -\frac{1}{N} \sum_{n=1}^N \frac{1}{M}\sum_{i=1}^{M_i} \lambda(\mathcal{L}_{\mathrm{angle}}^{ni} + \mathcal{L}_{\mathrm{radius}}^{ni})$$
+    $$L_\mathrm{seq} = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{M}\sum_{i=1}^{M_i} \mathrm{CE}(\mathbf{a}_{ni}^{\mathrm{true}}, \mathbf{a}_{ni} ) \quad L_{\mathrm{structure}} = -\frac{1}{N} \sum_{n=1}^N \frac{1}{M}\sum_{i=1}^{M_i} \lambda(\mathcal{L}_{\mathrm{angle}}^{ni} + \mathcal{L}_{\mathrm{radius}}^{ni})$$
 </p>
 
 The angle loss is defined using negative von-mises log-likelihood and radii loss using using negative gaussian log-likelihood as,
 
 <p align="center">
-    $$\mathcal{L}_{\mathrm{angle}}^{ni} = \sum_k^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \sum_{\theta \in \{\alpha,\gamma\}} \log \mathcal{M}(\theta_{ik}^{n} \mid \theta_{ik}^{n,true}, \kappa) \quad \mathcal{L}_\mathrm{radius}^{ni} = \sum_{k}^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \log \mathcal{N}( r_{ik}^{n} | r_{ik}^{n,true}, \sigma_r^2 )$$
+    $$L_{\mathrm{angle}}^{ni} = \sum_k^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \sum_{\theta \in \{\alpha,\gamma\}} \log \mathcal{M}(\theta_{ik}^{n} \mid \theta_{ik}^{n,true}, \kappa) \quad L_\mathrm{radius}^{ni} = \sum_{k}^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \log \mathcal{N}( r_{ik}^{n} | r_{ik}^{n,true}, \sigma_r^2 )$$
 </p>
 
 ## Sequence and Structure Generation
