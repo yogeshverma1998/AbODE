@@ -35,157 +35,146 @@ De novo generation of new antibodies targeting specific antigens is key to accel
   <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic2.png" />
 </p>
 
-# Continuous Normalizing Flows
+# Neural ODEs
+
+Neural ODEs have been widely applied to Graphs, such as GRAND, PDE-GCN, etc., providing a general way to create novel embedding methods. An ODE defines the dynamics of node updates as,
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/Modular-Flows-Differential-Molecular-Generation/main/nf_website.png" />
-</p>
+    $$\dot{\mathbf{z}}_{i}(t) := \frac{\partial \mathbf{z}_i(t)}{\partial t} = f_\theta\big( t, \mathbf{z}_i(t), \mathbf{z}_{\mathcal{N}_i}(t) \big), \qquad i = 1, \ldots, M$$
+  </p> 
 
-Normalizing flow have seen widespread use for density modeling, generative modeling, etc which provides a general way of constructing flexible probability distributions. It is defined by a parameterized invertible deterministic transformation from a base distribution $$\mathcal{Z}$$ (e.g., Gaussian distribution) to real-world observational space $$X$$ (e.g. images and speech). When the dynamics of transformation is governed by an ODE, the method is known as Continous Normalizing Flows (CNFs). The process starts by sampling from a base distribution $$\mathbf{z}_0 \sim p_0(\mathbf{z}_0)$$, then solving the IVP $$\mathbf{z}(t_0) = \mathbf{z}_0$$, $$\dot{\mathbf{z}}(t) = \frac{\partial \mathbf{z}(t)}{\partial t} = f(\mathbf{z}(t),t;\theta)$$, where ODE is defined by the parametric function $$f(\mathbf{z}(t),t;\theta)$$ to obtain $$\mathbf{z}(t_1)$$ which constitutes our observable data. Then, using the *instantaneous change of variables* formula change in log-density under this model is given as:
+Where $$\mathbf{z}_{i}$$ are node features, $$f_\theta$$ is parametrized by a NN, and the model essentially learns a differential vector field that guides to create of expressive embeddings of nodes. 
 
-
-<p align="center">
-    $$\frac{\partial \log p_t(\mathbf{z}(t))}{\partial t} = -\texttt{tr} \left( \frac{\partial f}{\partial \mathbf{z}(t)} \right)$$
-</p> 
-
-Given a datapoint $$\mathbf{x}$$, we can compute both the point $$\mathbf{z}_{0}$$ which generates $$\mathbf{x}$$, as well as $$\log p_1(\mathbf{x})$$ by solving the initial value problem which integrates the combined dynamics of $$\mathbf{z}(t)$$ and the log-density of the sample resulting in the computation of $$\log p_{1}(\mathbf{x})$$.
-
-
-# Modular Flows
+# AbODE
 
 ## Representation
-
-We represent molecule as a graph $$G = (V,E)$$, where each vertex takes value from an alphabet on atoms:  $$v \in \mathcal{A} = \{ \texttt{C},\texttt{H},\texttt{N},\texttt{O},\texttt{P},\texttt{S},\ldots \}$$; while the edges $$e \in \mathcal{B} = \{1,2,3\}$$ abstract the type of bond (i.e., single, double, or triple). We assume the following decomposition of the graph likelihood, over vertices conditioned on the edges and given the latent representations, 
-
-<p align="center">
-    $$p(G) := p(V | E,\{ z\}) = \prod_{i=1}^M \texttt{Cat}(v_i | \sigma(\mathbf{z}_i))$$
-</p> 
+We define antigen-antibody complex as a 3D graph $$G = (V,E,X)$$, where $$V = (V_\mathrm{Ab},V_\mathrm{Ag})$$, $$X = (X_\mathrm{Ab},X_\mathrm{Ag})$$, $$E = (E_\mathrm{Ab},E_\mathrm{Ab-Ag})$$, antibody $$\mathrm{Ab}$$￼and antigen $$\mathrm{Ag}$$. 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/slide_2_1.png" width="700" height="300" />
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/ab_ag_comp_v5.png"/>
 </p>
 
-We can obtain an alternative representation by decomposing a moleculer graph into a tree, by contracting certain vertices into a single node such that the molecular graph $$G$$ becomes acyclic. We followed a similar decompositon as JT-VAE[4], but restrict these clusters to ring-substructures, in addition to the atom alphabet. Thus, we obtain an extended alphabet vocabulary as $$\mathcal{A}_{\mathrm{tree}} = \{ \texttt{C},\texttt{H},\texttt{N}, \ldots,  \texttt{C}_{1},\texttt{C}_{2},\ldots \}$$, where each cluster label $$\texttt{C}_{r}$$ corresponds to the some ring-substructure in the label vocabulary $$\chi$$
+We define full connected heterogeneous edges between antibody $$E_\mathrm{Ab}$$ residues, and $$E_\mathrm{Ab-Ag}$$ antigen. Our node state is denoted by $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$, where $$\mathbf{a}_i \in \mathrm{R}^{20}$$, a categorical distribution over the amino acid labels￼$$\{ \texttt{Arg},\texttt{His},\ldots \}$$, and $$s_i$$ is our novel quaternion type coordinate embedding.
+
+### Quaternion-type coordinate embedding
+
+We also represent each residue by the cartesian 3D coordinates of its three backbone atoms $$\{ N, C_{\alpha}, C\}$$. For the $$i^{th}$$ residue $$\mathbf{x}_{i}$$ we compute its spatial features $$\mathbf{s}_{i} = (r_{i},\alpha_{i},\gamma_{i})$$, where, $r_i$ denotes the distance between consecutive residues $x_i$ and $x_{i+1}$, $\alpha_{i}$ is the co-angle of residue $i$ wrt previous and next residue, $\gamma_{i}$ is the azimuthal angle of $i$’s local plane, and $\mathbf{n}_{i}$ is the normal vector. The full residue state $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$ concatenates the label features $$\mathbf{a}_i$$ and the spatial features $$\mathbf{s}_i$$ and $$\mathbf{u}_i = \mathbf{x}_{i+1} - \mathbf{x}_i$$.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/junction_mod.png" />
+    $$r_i = || \mathbf{u}_i ||, \quad \alpha_i = \cos^{-1}\left( \frac{\langle\mathbf{u}_i,  \mathbf{u}_{i-1}\rangle}{||\mathbf{u}_i|| \cdot ||\mathbf{u}_{i-1}||}\right)$$
+</p>
+
+<p align="center">
+      $$\gamma_i = \cos^{-1}\left( \frac{\langle \mathbf{u}_i , \mathbf{n}_i\rangle}{||\mathbf{u}_i|| \cdot ||\mathbf{n}_i||}\right), \quad \mathbf{n}_i = \mathbf{u}_i \times \mathbf{u}_{i-1}$$
+</p>
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic4.png"/>
+</p>
+
+
+We model inter-antibody-antigen and intra-antibody interactions with a joint 3D graph over the antigen and the antibody using edge features, 
+
+<p align="center">
+      $$ \mathbf{e}_{ij} = (\Delta \mathbf{z}_{ij}, i-j, \mathrm{RBF}(|| \mathbf{s}_i - \mathbf{s}_j|| ),\mathcal{O}_{i}^{\top} \frac{s_{i,\alpha} - s_{j,\alpha}}{||s_{i,\alpha} - s_{j,\alpha} ||},~\mathcal{O}_{i}^{\top}\mathcal{O}_{j },~k_{ij} )$$
+</p>
+where state differences $$\Delta \mathbf{z}_{i j} = \{ \Delta \mathbf{a}_{ij}, \Delta \mathbf{s}_{ij}\}$$, backbone distance $$i-j$$, and spatial distance $$\texttt{RBF}(||\mathbf{s}_i-\mathbf{s}_j||)$$ (here, RBF is the standard radius basis function kernel). The fourth term encodes directional embedding in the relative direction of $j$ in the local coordinate frame $$\mathcal{O}_i $$. The $$\mathcal{O}^{T}_i\mathcal{O}_j $$ describes the orientation encoding of the node $i$ with node $j$. Finally, we encode within-antibody edges with $k = 1$ and antibody-antigen edges with $k = 2$.
+
+
+## Conjoined System of ODEs
+We  model the distribution of antibody-antigen complexes by ODE over $$\mathbf{z}(t)$$ over time $$t \in \mathrm{R}_{+}$$. We initialize the initial state $$\mathbf{z}(0)$$ to a uniform categorical vector and coordinates are initialized with the even distribution between the residue right before CDRs and the one right after CDRs, and we learn a differential $$\frac{d\mathbf{z}(t)}{dt}$$ that maps to the end state $\mathbf{z}(T)$ that matches data.
+
+We begin by assuming an ODE system $\{\mathbf{z}_{i}(t)\}$ over time $$t \in \mathrm{R}_{+}$$, where node the time evolution of node $$i$$ is an ODE
+<p align="center">
+    $$\dot{\mathbf{z}}_i(t) = \frac{\partial \mathbf{z}_i(t)}{\partial t} = f_\psi\big( t, \mathbf{z}_i(t), \mathbf{z}_{N(i)}(t), \{ \mathbf{e}_{ij}(t)\}_j \big)$$
+</p>
+
+Collecting all, we get a system of conjoined ODEs, which can be solved using ODEsolvers.
+
+<p align="center">
+    $$\dot{\mathbf{z}}(t) \triangleq \begin{pmatrix} \dot{\mathbf{z}}_1(t) \\ \vdots \\ \dot{\mathbf{z}}_M(t) \end{pmatrix} = \begin{pmatrix} f_\psi\big( t, \mathbf{z}_1(t), \mathbf{z}_{N(1)}(t), \{ \mathbf{e}_{1j}(t)\}_j \big) \\ \vdots \\ f_\psi\big( t, \mathbf{z}_M(t), \mathbf{z}_{N(M)}(t), \{ \mathbf{e}_{Mj}(t)\}_j \big) \end{pmatrix}$$
 </p>
 
 
 
-## Differential Modular Flows
+### Attention-based Differential
 
-Based on the general recipie of normalizing flows, we propose to model the node scores $$\mathbf{z}_{i}$$ as a Continuous-time Normalizing Flow (CNF)[7] over time $$t \in \mathrm{R}_+$$. We assume the initial scores at time $$t=0$$ follow an uninformative Gaussian base distribution $$\mathbf{z}_i(0) \sim \mathcal{N}(0,I)$$ for each node $$i$$. Node scores evolve in parallel over time by a differential equation,
-
+We capture the interactions between the antigen and antibody residues with graph attention, as,
 <p align="center">
-    $$\dot{\mathbf{z}}_{i}(t) := \frac{\partial \mathbf{z}_i(t)}{\partial t} = f_\theta\big( t, \mathbf{z}_i(t), \mathbf{z}_{\mathcal{N}_i}(t),\mathbf{x}_{i}, \mathbf{x}_{\mathcal{N}_i} \big), \qquad i = 1, \ldots, M$$
-  </p> 
-  
-where $$\mathcal{N}_{i} = \{ \mathbf{z}_{j} : (i,j) \in E \}$$ is the set of neighbor scores at time $$t$$, $$\mathbf{x}$$ is the spatial information (2D/3D), and $$\theta$$ are the parameters of the flow function $$f$$ to be learned. 
-
+    $$\alpha_{ij} = \texttt{softmax}\left( \frac{\left(\mathbf{W}_3 \mathbf{z}_i\right)^{\top}\left(\mathbf{W}_4 \mathbf{z}_j + \mathbf{W}_6 \mathbf{e}_{i j}\right)}{\sqrt{d}} \right)$$
+</p>
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/slide_3_1.png" width="500" height="400" />
+    $$\mathbf{z}_i^{\prime}= \mathbf{W}_1 \mathbf{z}_i + \sum_{j \in N_{int}(i)} \alpha_{ij}^{\texttt{int}}\left(\mathbf{W}_2 \mathbf{z}_j+\mathbf{W}_6 \mathbf{e}_{i j}\right) + \sum_{j \in N_{ext}(i)} \alpha_{ij}^{\texttt{ext}}\left(\mathbf{W}^{\prime}_2 \mathbf{z}_j+\mathbf{W}^{\prime}_6 \mathbf{e}_{i j}\right)$$
 </p>
 
-By collecting all node differentials we obtain a **modular** joint, coupled ODE, which is equivalent to a graph PDE [9,10], where the evolution of each node only depends on its immediate neighbors. 
-<p align="center">
- $$\dot{\mathbf{z}}_{i}(t) = \begin{pmatrix} \dot{\mathbf{z}}_{i}(t)_1(t) \\ \vdots \\ \dot{\mathbf{z}}_{i}(t)_M(t) \end{pmatrix} = \begin{pmatrix} f_\theta\big( t, \mathbf{z}_1(t), \mathbf{z}_{\mathcal{N}_1}(t),\mathbf{x}_{i}, \mathbf{x}_{\mathcal{N}_i} \big) \\ \vdots \\ f_\theta\big( t, \mathbf{z}_M(t), \mathbf{z}_{\mathcal{N}_M}(t),\mathbf{x}_{i}, \mathbf{x}_{\mathcal{N}_i} \big) \end{pmatrix} $$
- </p>
-## Equivariant local differential
-The goal is to have a function $$f_{\theta}$$ such that it satisfies natural equivariances and invariances of molecules like translation, rotational, reflection equivariances. Therefore, we chose to use E(3)-Equivariant GNN (EGNN)[11] which satisfies all the above criteria.
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/mol_sym.png" />
-</p> 
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic5.png" width="400" height="300" />
+</p>
+
 ## Training Objective
 
-We reduce the learning problem to maximizing the score cross-entropy $$\mathrm{E}_{\hat{p}_{\mathrm{data}}(\mathbf{z}(T))}[\log p_\theta(\mathbf{z}(T))]$$, where we turn the observed set of graphs $$\{G_{n}\}$$ into a set of scores $$\{\mathbf{z}_{n}\}$$ by using one-hot encoding 
+We optimize our model jointly with loss consisting of two components: one for the sequence and another for the structure, as,
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/kl_2.png" width="700" height="300" />
+    $$\mathcal{L} = \mathcal{L}_\mathrm{seq} + \mathcal{L}_\mathrm{structure}$$
 </p>
 
+where, 
 <p align="center">
-$$\mathbf{z}_n (G_n; \epsilon) = (1-\epsilon)~\mathrm{onehot}(G_n) ~+~ \dfrac{\epsilon}{|\mathcal{A_s}|} \textbf{1}_{M(n)} \textbf{1}_{|\mathcal{A_s}|}^{\top}~,$$
-</p>
-where $$\mathrm{onehot}(G_{n})$$ is a matrix ($$M(n) \times |\mathcal{A_{s}}|$$), such that $$G_{n}(i, k)$$ = 1 if $$v_{i} = a_{k} \in \mathcal{A_{s}}$$, that is if the vertex $$i$$ is labeled with atom $$k$$, and 0 otherwise; $$\textbf{1}_{q}$$ is a vector with $$q$$ entries each set to 1; $$\mathcal{A_{s}} \in \{\mathcal{A}, \mathcal{A}_{\rm tree} \}$$; and $$\epsilon \in [0,1]$$ is added to model the noise in estimating the posterior $$p({\mathbf{z}(T)|G})$$. This is due to short-circuiting the inference process from $$G$$ to $$\mathbf{z}(T)$$ skipping the intermediate dependencies, as shown in the plate diagram. 
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/tikz_diagram.png" />
+    $$\mathcal{L}_\mathrm{seq} = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{M}\sum_{i=1}^{M_i} \mathrm{CE}(\mathbf{a}_{ni}^{\mathrm{true}}, \mathbf{a}_{ni} ) \quad \mathcal{L}_{\mathrm{structure}} = -\frac{1}{N} \sum_{n=1}^N \frac{1}{M}\sum_{i=1}^{M_i} \lambda(\mathcal{L}_{\mathrm{angle}}^{ni} + \mathcal{L}_{\mathrm{radius}}^{ni})$$
 </p>
 
-We exploit the non-reversible composition of the argmax and softmax to transition from continous space to discrete graph space, but short-circuit in reverse direction as shown in the figure below. This indeed allows to keep the forward and backward flows aligned. We thus maximize an objective over $$N$$ training graphs, 
-<p align="center">
-$$\texttt{argmax}_\theta \qquad \mathcal{L} = \mathcal{E}_{\hat{p}_{\mathrm{data}}(\mathbf{z})} \log p_\theta(\mathbf{z}) \approx \frac{1}{N} \sum_{n=1}^N \log p_T\big( \mathbf{z}(T) = \mathbf{z}_n \big)$$     
-</p>  
-
-## Molecule Generation
-
-We generate novel molecules by sampling an initial state $$\mathbf{z}(0) \sim \mathcal{N}(0,I)$$ based on structure, and running the modular flow forward in time until $$\mathbf{z}(T)$$. This procedure maps a tractable base distribution $$p_0$$ to some more complex distribution $$p_T$$. We follow argmax to pick the most probable label assignment for each node as shown below.
+The angle loss is defined using negative von-mises log-likelihood and radii loss using using negative gaussian log-likelihood as,
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/first_page_final_v9.png" />
+    $$\mathcal{L}_{\mathrm{angle}}^{ni} = \sum_k^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \sum_{\theta \in \{\alpha,\gamma\}} \log \mathcal{M}(\theta_{ik}^{n} \mid \theta_{ik}^{n,true}, \kappa) \quad \mathcal{L}_\mathrm{radius}^{ni} = \sum_{k}^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \log \mathcal{N}( r_{ik}^{n} | r_{ik}^{n,true}, \sigma_r^2 )$$
+</p>
+
+## Sequence and Structure Generation
+
+Given the antibody or antigen-antibody complex, we generate an antibody sequence and the corresponding structure by solving the system of ODEs for time T to obtain $$\mathbf{z}(T ) = [\mathbf{a}(T), \mathbf{s}(T)]$$. We transform the label features $\a(T )$ into Categorical amino acid probabilities $\textbf{p}$ using the softmax operator. We pick the most probable amino acid per node.
+
+<p align="center">
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic6.png"/>
 </p>
 
 # Results
-## Density Estimation
+## Unconditioned Antibody Sequence and Structure Generation
 
-We demonstrated the power of our method on learning highly discontinous patterns on 2D grid graphs. We considered patterns corresponding to two-variants of chess-board pattern as $$4 \times 4$$, where every node has opposite value to its neighbors and $$16 \times 16$$ grid where blocks of $$4 \times 4$$ nodes have uniform values, but opposite across blocks. At last, we also considered alternate stripes pattern over $$20 \times 20$$ grid.
+The task is to generate antibody sequence and structure without any external conditioning, where we used PPL : Perplexity (Exponential of negative log-likelihood) and 
+RMSD: Root Mean Square Deviation by Kabsch Algorithm as our metrics. 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/toy_final.png" width="600" height="300" />
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic7.png" />
+</p>
+Some generated structures via **$$\texttt{AbODE}$$** are also shown above. We visually evaluate the generated structures via out method via properties distribution. We utilize kernel density estimation of these distributions to visualize these distributions. We use
+
+- **Gravy**: The Gravy value is calculated by adding the hydropathy value for each residue and dividing it by the sequence length.
+- **Instability**:  The Instability index predicts regional instability of dipeptides that occur more frequently in unstable proteins when compared to stable proteins
+- **Aromaticity**: It calculates the aromaticity value of a protein, which is simply the relative frequency of Phe+Trp+Tyr
+  
+<p align="center">
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/joint_dens.png"/>
 </p>
 
+## Conditioned Antibody Sequence and Structure Generation
 
-## Molecular Experiments
-We trained the model on QM9[6] and ZINC250K[5] dataset, where molecules are in kekulized form with hydrogens removed by the RDkit[8] software. We adopt common quality metrics to evaluate molecular generation as,
-
-- **Validity**: Fraction of molecules that satisfy chemical valency rule
-- **Uniqueness**: Fraction of non-duplicate generations
-- **Novelty**: Fraction of molecules not present in training data
-- **Reconstruction**: Fraction of molecules that can be reconstructed from their encoding
-
+The task is to generate antibody sequence and structure with an external conditioning i.e. the Antigen, where we used AAR: Amino Acid Recovery rate, defined as the overlapping rate between the predicted 1D sequences and the ground truth and RMSD as our metrics. 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/slide_6_1.png" />
-</p>
-Apart from these metrics, we also evaluated our method on MOSES metrics. These are:
-
-- **FCD**: measures diversity and chemical and biological property alignment
-- **SNN**: quantifies closeness of generated molecules to true molecule manifold
-- **Frag**: measures distance between the fragment frequencies  generated and reference
-- **IntDiv**: diversity by computing pairwise similarity of the generated molecules
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/slide_6_2.png" />
-</p>
-
-Some of the generated molecules via **$$\texttt{ModFlow}$$** are also shown above. We visually evaluate the generated structures via out method via properties distribution. We utilize kernel density estimation of these distributions to visualize these distributions. We use
-
-- **Molecular Weight**: Sum of the individual atomic weights of a molecule.
-- **LogP**: Ratio of concentration in octanol-phase to aqueous phase, also known as the octanol-water partition coefficient.
-- **Synthetic Accessibility Score (SA)**: Estimate describing the  synthesizability of a given molecule
-- **Quantitative Estimation of Drug-likeness (QED)**: Value describing likeliness of a molecule as a viable candidate for a drug
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/prop_dist_combined.png" />
-</p>
-
-## Property-targeted Molecular Optimization
-We performed Property-targeted Molecular Optimization, to search for molecules, having a better chemical properties. Specifically, we choose quantitative estimate of drug-likeness (QED) as our target chemical property, which measures the potential of a molecule to be characterized as a drug.  We used a pre-trained ModFlow model $$f$$, to encode a molecule $$\mathcal{M}$$ and get the embedding $$Z = f(\mathcal{M})$$, and further used linear regression to regress these embeddings to the QED scores and interpolated in the latent space space of a molecule along the direction of increasing QED. This is done via gradient ascend method, $$Z' = Z + \lambda*\frac{dy}{dZ}$$ where $$y$$ is the QED score and  $$\lambda$$ is the length of the search step. The above method is conducted for $$K$$ steps, and the new embedding $$Z'$$ is decoded back to molecule space via reverse mapping $$\mathcal{M}' = f^{-1}(\mathcal{Z}')$$.
-
-<p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/prop_opt_qm9.png" />
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic8.png"/>
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/prop_opt_zinc.png" />
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic9.png"/>
 </p>
 
-The above figures represent the molecules decoded from the learned latent space with linear regression for successful molecular optimization.
 
-## Ablation Studies
-We performed ablation experiments to gain further insights about **$$\texttt{ModFlow}$$**. Specifically, we conducted ablation study to quantify the effect of incorporating the symmetries in our model as **E(3) Equivariant vs Not Equivariant**, where we compare the results to a 3-layer GCN and investigated whether including 3D coordinate information **2D vs 3D**, improves the model and evaluate the benefit of including the geometric information. 
+## Antigen-binding CDR-H3 Design
+
+Design CDR-H3 that binds to a given antigen, evaluated on 60 diverse complexes selected by RabD
+
 <p align="center">
-  <img src="https://raw.githubusercontent.com/yogeshverma1998/ModFlow/main/ablation_final_combined.png" />
+  <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic10.png"/>
 </p>
 
 # Conclusion
