@@ -78,13 +78,13 @@ We model inter-antibody-antigen and intra-antibody interactions with a joint 3D 
 <p align="center">
       $$ \mathbf{e}_{ij} = (\Delta \mathbf{z}_{ij}, i-j, \mathrm{RBF}(|| \mathbf{s}_i - \mathbf{s}_j|| ),O_{i}^{\top} \frac{s_{i,\alpha} - s_{j,\alpha}}{||s_{i,\alpha} - s_{j,\alpha} ||},~O_{i}^{\top}O_{j },~k_{ij} )$$
 </p>
-where state differences $$\Delta \mathbf{z}_{i j} = \{ \Delta \mathbf{a}_{ij}, \Delta \mathbf{s}_{ij}\}$$, backbone distance $$i-j$$, and spatial distance $$\texttt{RBF}(||\mathbf{s}_i-\mathbf{s}_j||)$$ (here, RBF is the standard radius basis function kernel). The fourth term encodes directional embedding in the relative direction of $j$ in the local coordinate frame $$O_i$$. The $$O^{T}_i O_j $$ describes the orientation encoding of the node $i$ with node $j$. Finally, we encode within-antibody edges with $$k = 1$$ and antibody-antigen edges with $$k = 2$$.
+where state differences $$\Delta \mathbf{z}_{i j} = \{ \Delta \mathbf{a}_{ij}, \Delta \mathbf{s}_{ij}\}$$, backbone distance $$i-j$$, and spatial distance $$\texttt{RBF}(||\mathbf{s}_i-\mathbf{s}_j||)$$ (here, RBF is the standard radius basis function kernel). The fourth term encodes directional embedding in the relative direction of $j$ in the local coordinate frame $$O_i$$. The $$O^{T}_i O_j $$ describes the orientation encoding of the node $$i$$ with node $$j$$. Finally, we encode within-antibody edges with $$k = 1$$ and antibody-antigen edges with $$k = 2$$.
 
 
 ## Conjoined System of ODEs
 We  model the distribution of antibody-antigen complexes by ODE over $$\mathbf{z}(t)$$ over time $$t \in \mathrm{R}_{+}$$. We initialize the initial state $$\mathbf{z}(0)$$ to a uniform categorical vector and coordinates are initialized with the even distribution between the residue right before CDRs and the one right after CDRs, and we learn a differential $$\frac{d\mathbf{z}(t)}{dt}$$ that maps to the end state $$\mathbf{z}(T)$$ that matches data.
 
-We begin by assuming an ODE system $\{\mathbf{z}_{i}(t)\}$ over time $$t \in \mathrm{R}_{+}$$, where node the time evolution of node $$i$$ is an ODE
+We begin by assuming an ODE system $$\{\mathbf{z}_{i}(t)\}$$ over time $$t \in \mathrm{R}_{+}$$, where node the time evolution of node $$i$$ is an ODE
 <p align="center">
     $$\dot{\mathbf{z}}_i(t) = \frac{\partial \mathbf{z}_i(t)}{\partial t} = f_\psi\big( t, \mathbf{z}_i(t), \mathbf{z}_{N(i)}(t), \{ \mathbf{e}_{ij}(t)\}_j \big)$$
 </p>
