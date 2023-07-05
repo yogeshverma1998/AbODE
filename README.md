@@ -58,7 +58,7 @@ We define full connected heterogeneous edges between antibody $$E_\mathrm{Ab}$$ 
 
 ### Quaternion-type coordinate embedding
 
-We also represent each residue by the cartesian 3D coordinates of its three backbone atoms $$\{ N, C_{\alpha}, C\}$$. For the $$i^{th}$$ residue $$\mathbf{x}_{i}$$ we compute its spatial features $$\mathbf{s}_{i} = (r_{i},\alpha_{i},\gamma_{i})$$, where, $r_i$ denotes the distance between consecutive residues $x_i$ and $x_{i+1}$, $\alpha_{i}$ is the co-angle of residue $i$ wrt previous and next residue, $\gamma_{i}$ is the azimuthal angle of $i$’s local plane, and $\mathbf{n}_{i}$ is the normal vector. The full residue state $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$ concatenates the label features $$\mathbf{a}_i$$ and the spatial features $$\mathbf{s}_i$$ and $$\mathbf{u}_i = \mathbf{x}_{i+1} - \mathbf{x}_i$$.
+We also represent each residue by the cartesian 3D coordinates of its three backbone atoms $$\{ N, C_{\alpha}, C\}$$. For the $$i^{th}$$ residue $$\mathbf{x}_{i}$$ we compute its spatial features $$\mathbf{s}_{i} = (r_{i},\alpha_{i},\gamma_{i})$$, where, $r_i$ denotes the distance between consecutive residues $$x_i$$ and $$x_{i+1}$$, $$\alpha_{i}$$ is the co-angle of residue $i$ wrt previous and next residue, $$\gamma_{i}$$ is the azimuthal angle of $i$’s local plane, and $$\mathbf{n}_{i}$$ is the normal vector. The full residue state $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$ concatenates the label features $$\mathbf{a}_i$$ and the spatial features $$\mathbf{s}_i$$ and $$\mathbf{u}_i = \mathbf{x}_{i+1} - \mathbf{x}_i$$.
 
 <p align="center">
     $$r_i = || \mathbf{u}_i ||, \quad \alpha_i = \cos^{-1}\left( \frac{\langle\mathbf{u}_i,  \mathbf{u}_{i-1}\rangle}{||\mathbf{u}_i|| \cdot ||\mathbf{u}_{i-1}||}\right)$$
@@ -76,13 +76,13 @@ We also represent each residue by the cartesian 3D coordinates of its three back
 We model inter-antibody-antigen and intra-antibody interactions with a joint 3D graph over the antigen and the antibody using edge features, 
 
 <p align="center">
-      $$ \mathbf{e}_{ij} = (\Delta \mathbf{z}_{ij}, i-j, \mathrm{RBF}(|| \mathbf{s}_i - \mathbf{s}_j|| ),\mathcal{O}_{i}^{\top} \frac{s_{i,\alpha} - s_{j,\alpha}}{||s_{i,\alpha} - s_{j,\alpha} ||},~\mathcal{O}_{i}^{\top}\mathcal{O}_{j },~k_{ij} )$$
+      $$ \mathbf{e}_{ij} = (\Delta \mathbf{z}_{ij}, i-j, \mathrm{RBF}(|| \mathbf{s}_i - \mathbf{s}_j|| ),O_{i}^{\top} \frac{s_{i,\alpha} - s_{j,\alpha}}{||s_{i,\alpha} - s_{j,\alpha} ||},~O_{i}^{\top}O_{j },~k_{ij} )$$
 </p>
-where state differences $$\Delta \mathbf{z}_{i j} = \{ \Delta \mathbf{a}_{ij}, \Delta \mathbf{s}_{ij}\}$$, backbone distance $$i-j$$, and spatial distance $$\texttt{RBF}(||\mathbf{s}_i-\mathbf{s}_j||)$$ (here, RBF is the standard radius basis function kernel). The fourth term encodes directional embedding in the relative direction of $j$ in the local coordinate frame $$\mathcal{O}_i $$. The $$\mathcal{O}^{T}_i\mathcal{O}_j $$ describes the orientation encoding of the node $i$ with node $j$. Finally, we encode within-antibody edges with $k = 1$ and antibody-antigen edges with $k = 2$.
+where state differences $$\Delta \mathbf{z}_{i j} = \{ \Delta \mathbf{a}_{ij}, \Delta \mathbf{s}_{ij}\}$$, backbone distance $$i-j$$, and spatial distance $$\texttt{RBF}(||\mathbf{s}_i-\mathbf{s}_j||)$$ (here, RBF is the standard radius basis function kernel). The fourth term encodes directional embedding in the relative direction of $j$ in the local coordinate frame $$O_i$$. The $$O^{T}_i O_j $$ describes the orientation encoding of the node $i$ with node $j$. Finally, we encode within-antibody edges with $$k = 1$$ and antibody-antigen edges with $$k = 2$$.
 
 
 ## Conjoined System of ODEs
-We  model the distribution of antibody-antigen complexes by ODE over $$\mathbf{z}(t)$$ over time $$t \in \mathrm{R}_{+}$$. We initialize the initial state $$\mathbf{z}(0)$$ to a uniform categorical vector and coordinates are initialized with the even distribution between the residue right before CDRs and the one right after CDRs, and we learn a differential $$\frac{d\mathbf{z}(t)}{dt}$$ that maps to the end state $\mathbf{z}(T)$ that matches data.
+We  model the distribution of antibody-antigen complexes by ODE over $$\mathbf{z}(t)$$ over time $$t \in \mathrm{R}_{+}$$. We initialize the initial state $$\mathbf{z}(0)$$ to a uniform categorical vector and coordinates are initialized with the even distribution between the residue right before CDRs and the one right after CDRs, and we learn a differential $$\frac{d\mathbf{z}(t)}{dt}$$ that maps to the end state $$\mathbf{z}(T)$$ that matches data.
 
 We begin by assuming an ODE system $\{\mathbf{z}_{i}(t)\}$ over time $$t \in \mathrm{R}_{+}$$, where node the time evolution of node $$i$$ is an ODE
 <p align="center">
@@ -133,7 +133,7 @@ The angle loss is defined using negative von-mises log-likelihood and radii loss
 
 ## Sequence and Structure Generation
 
-Given the antibody or antigen-antibody complex, we generate an antibody sequence and the corresponding structure by solving the system of ODEs for time T to obtain $$\mathbf{z}(T ) = [\mathbf{a}(T), \mathbf{s}(T)]$$. We transform the label features $\a(T )$ into Categorical amino acid probabilities $\textbf{p}$ using the softmax operator. We pick the most probable amino acid per node.
+Given the antibody or antigen-antibody complex, we generate an antibody sequence and the corresponding structure by solving the system of ODEs for time T to obtain $$\mathbf{z}(T ) = [\mathbf{a}(T), \mathbf{s}(T)]$$. We transform the label features $\a(T )$ into Categorical amino acid probabilities $$\textbf{p}$$ using the softmax operator. We pick the most probable amino acid per node.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic6.png"/>
@@ -179,7 +179,7 @@ Design CDR-H3 that binds to a given antigen, evaluated on 60 diverse complexes s
 
 # Conclusion
 > 1. We propose AbODE, which models the antibody-antigen complex as a joint graph, and via a system of coupled residue-specific ODEs.
-> 2. AbODE is able to incorporate conditional contextual and spatial information in ODEs tailored for Antibody design.
+> 2. AbODE can incorporate conditional contextual and spatial information in ODEs tailored for Antibody design.
 
 # References
 
