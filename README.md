@@ -58,7 +58,7 @@ We define full connected heterogeneous edges between antibody $$E_\mathrm{Ab}$$ 
 
 ### Quaternion-type coordinate embedding
 
-We also represent each residue by the cartesian 3D coordinates of its three backbone atoms $$\{ N, C_{\alpha}, C\}$$. For the $$i^{th}$$ residue $$\mathbf{x}_{i}$$ we compute its spatial features $$\mathbf{s}_{i} = (r_{i},\alpha_{i},\gamma_{i})$$, where, $r_i$ denotes the distance between consecutive residues $$x_i$$ and $$x_{i+1}$$, $$\alpha_{i}$$ is the co-angle of residue $i$ wrt previous and next residue, $$\gamma_{i}$$ is the azimuthal angle of $i$’s local plane, and $$\mathbf{n}_{i}$$ is the normal vector. The full residue state $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$ concatenates the label features $$\mathbf{a}_i$$ and the spatial features $$\mathbf{s}_i$$ and $$\mathbf{u}_i = \mathbf{x}_{i+1} - \mathbf{x}_i$$.
+We also represent each residue by the cartesian 3D coordinates of its three backbone atoms $$\{ N, C_{\alpha}, C\}$$. For the $$i^{th}$$ residue $$\mathbf{x}_{i}$$ we compute its spatial features $$\mathbf{s}_{i} = (r_{i},\alpha_{i},\gamma_{i})$$, where, $$r_i$$ denotes the distance between consecutive residues $$x_i$$ and $$x_{i+1}$$, $$\alpha_{i}$$ is the co-angle of residue $$i$$ wrt previous and next residue, $$\gamma_{i}$$ is the azimuthal angle of $$i$$’s local plane, and $$\mathbf{n}_{i}$$ is the normal vector. The full residue state $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$ concatenates the label features $$\mathbf{a}_i$$ and the spatial features $$\mathbf{s}_i$$ and $$\mathbf{u}_i = \mathbf{x}_{i+1} - \mathbf{x}_i$$.
 
 <p align="center">
     $$r_i = || \mathbf{u}_i ||, \quad \alpha_i = \cos^{-1}\left( \frac{\langle\mathbf{u}_i,  \mathbf{u}_{i-1}\rangle}{||\mathbf{u}_i|| \cdot ||\mathbf{u}_{i-1}||}\right)$$
@@ -184,12 +184,12 @@ Design CDR-H3 that binds to a given antigen, evaluated on 60 diverse complexes s
 # References
 
 <ol>
-  <li>Iterative refinement graph neural network for antibody sequence-structure co-design, ICLR 2022</li>
-  <li>Independent SE(3)-Equivariant Models for End-to-End Rigid Docking, ICLR 2022</li>
-  <li>Modular Flows: DIfferential Molecular Generation, NeurIPS 2023</li>
-  <li>Conditional Antibody Design as 3D Equivariant Graph Translation, ICLR 2023</li>
-  <li>Generative Models for Graph-based Protein Design, NeurIPS 2019</li>
-  <li>Neural Ordinary Differential Equations, NeurIPS 2018</li>
+  <li>Iterative refinement graph neural network for antibody sequence-structure co-design, Jin et al., ICLR 2022</li>
+  <li>Independent SE(3)-Equivariant Models for End-to-End Rigid Docking, Ganea et al., ICLR 2022</li>
+  <li>Modular Flows: DIfferential Molecular Generation, Verma et al., NeurIPS 2022</li>
+  <li>Conditional Antibody Design as 3D Equivariant Graph Translation, Kong et al., ICLR 2023</li>
+  <li>Generative Models for Graph-based Protein Design, Ingraham et al., NeurIPS 2019</li>
+  <li>Neural Ordinary Differential Equations, Chen et al., NeurIPS 2018</li>
 </ol>
 
 
