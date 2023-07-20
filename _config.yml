@@ -1,8 +1,7 @@
 title: "AbODE: Ab initio antibody design using conjoined ODEs"
 description: In International Conference on Machine Learning (ICML), 2023
-author: Yogesh Verma, Markus Heinonen, Vikas Garg
+author: "Yogesh Verma^{1}, Markus Heinonen^{1}, Vikas Garg^{1}"
 email: yogesh.verma@aalto.fi
-markdown: kramdown
 theme: jekyll-theme-cayman # << Set the Cayman theme!
 plugins:
   - jekyll-feed
