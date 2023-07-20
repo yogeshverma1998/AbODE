@@ -56,7 +56,7 @@ Where $$\mathbf{z}_{i}$$ are node features, $$f_\theta$$ is parametrized by a NN
 # AbODE
 
 ## Representation
-We define antigen-antibody complex as a 3D graph $$G = (V,E,X)$$, where $$V = (V_\mathrm{Ab},V_\mathrm{Ag})$$, $$X = (X_\mathrm{Ab},X_\mathrm{Ag})$$, $$E = (E_\mathrm{Ab},E_\mathrm{Ab-Ag})$$, antibody $$\mathrm{Ab}$$￼and antigen $$\mathrm{Ag}$$. 
+We define antigen-antibody complex as a 3D graph $$G = (V,E,X)$$, where $$V = (V_\mathrm{Ab},V_\mathrm{Ag})$$, $$X = (X_\mathrm{Ab},X_\mathrm{Ag})$$, $$E = (E_\mathrm{Ab},E_\mathrm{Ab-Ag})$$, antibody $$\mathrm{Ab}$$ and antigen $$\mathrm{Ag}$$. 
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/ab_ag_comp_v5.png"/>
@@ -130,18 +130,18 @@ We optimize our model jointly with loss consisting of two components: one for th
 
 where, 
 <p align="center">
-    $$L_\mathrm{seq} = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{M}\sum_{i=1}^{M_i} \mathrm{CE}(\mathbf{a}_{ni}^{\mathrm{true}}, \mathbf{a}_{ni} ) \quad L_{\mathrm{structure}} = -\frac{1}{N} \sum_{n=1}^N \frac{1}{M}\sum_{i=1}^{M_i} \lambda(\mathcal{L}_{\mathrm{angle}}^{ni} + \mathcal{L}_{\mathrm{radius}}^{ni})$$
+    $$L_\mathrm{seq} = \frac{1}{N} \sum_{n=1}^{N} \frac{1}{M}\sum_{i=1}^{M_i} \mathrm{CE}(\mathbf{a}_{ni}^{\mathrm{true}}, \mathbf{a}_{ni} ) \quad L_{\mathrm{structure}} = -\frac{1}{N} \sum_{n=1}^N \frac{1}{M}\sum_{i=1}^{M_i} \lambda(L_{\mathrm{angle}}^{ni} + L_{\mathrm{radius}}^{ni})$$
 </p>
 
 The angle loss is defined using negative von-mises log-likelihood and radii loss using using negative gaussian log-likelihood as,
 
 <p align="center">
-    $$L_{\mathrm{angle}}^{ni} = \sum_k^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \sum_{\theta \in \{\alpha,\gamma\}} \log \mathcal{M}(\theta_{ik}^{n} \mid \theta_{ik}^{n,true}, \kappa) \quad L_\mathrm{radius}^{ni} = \sum_{k}^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \log \mathcal{N}( r_{ik}^{n} | r_{ik}^{n,true}, \sigma_r^2 )$$
+    $$L_{\mathrm{angle}}^{ni} = \sum_k^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \sum_{\theta \in \{\alpha,\gamma\}} \log M(\theta_{ik}^{n} \mid \theta_{ik}^{n,true}, \kappa) \quad L_\mathrm{radius}^{ni} = \sum_{k}^{\{ \texttt{C}_{\alpha}, \texttt{C}, \texttt{N} \}} \log N( r_{ik}^{n} | r_{ik}^{n,true}, \sigma_r^2 )$$
 </p>
 
 ## Sequence and Structure Generation
 
-Given the antibody or antigen-antibody complex, we generate an antibody sequence and the corresponding structure by solving the system of ODEs for time T to obtain $$\mathbf{z}(T ) = [\mathbf{a}(T), \mathbf{s}(T)]$$. We transform the label features $\a(T )$ into Categorical amino acid probabilities $$\textbf{p}$$ using the softmax operator. We pick the most probable amino acid per node.
+Given the antibody or antigen-antibody complex, we generate an antibody sequence and the corresponding structure by solving the system of ODEs for time T to obtain $$\mathbf{z}(T ) = [\mathbf{a}(T), \mathbf{s}(T)]$$. We transform the label features $$\mathbf{a}(T )$$ into Categorical amino acid probabilities $$\textbf{p}$$ using the softmax operator. We pick the most probable amino acid per node.
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/abode_pic6.png"/>
