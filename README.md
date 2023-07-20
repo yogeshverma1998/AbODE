@@ -62,7 +62,7 @@ We define antigen-antibody complex as a 3D graph $$G = (V,E,X)$$, where $$V = (V
   <img src="https://raw.githubusercontent.com/yogeshverma1998/AbODE/main/ab_ag_comp_v5.png"/>
 </p>
 
-We define full connected heterogeneous edges between antibody $$E_\mathrm{Ab}$$ residues, and $$E_\mathrm{Ab-Ag}$$ antigen. Our node state is denoted by $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$, where $$\mathbf{a}_i \in \mathrm{R}^{20}$$, a categorical distribution over the amino acid labels￼$$\{ \texttt{Arg},\texttt{His},\ldots \}$$, and $$s_i$$ is our novel quaternion type coordinate embedding.
+We define full connected heterogeneous edges between antibody $$E_\mathrm{Ab}$$ residues, and $$E_\mathrm{Ab-Ag}$$ antigen. Our node state is denoted by $$\mathbf{z}_i = [\mathbf{a}_i, \mathbf{s}_i]$$, where $$\mathbf{a}_i \in \mathrm{R}^{20}$$, a categorical distribution over the amino acid labels $$\{ \texttt{Arg},\texttt{His},\ldots \}$$, and $$s_i$$ is our novel quaternion type coordinate embedding.
 
 ### Quaternion-type coordinate embedding
 
@@ -86,7 +86,7 @@ We model inter-antibody-antigen and intra-antibody interactions with a joint 3D 
 <p align="center">
       $$ \mathbf{e}_{ij} = (\Delta \mathbf{z}_{ij}, i-j, \mathrm{RBF}(|| \mathbf{s}_i - \mathbf{s}_j|| ),O_{i}^{\top} \frac{s_{i,\alpha} - s_{j,\alpha}}{||s_{i,\alpha} - s_{j,\alpha} ||},~O_{i}^{\top}O_{j },~k_{ij} )$$
 </p>
-where state differences $$\Delta \mathbf{z}_{i j} = \{ \Delta \mathbf{a}_{ij}, \Delta \mathbf{s}_{ij}\}$$, backbone distance $$i-j$$, and spatial distance $$\texttt{RBF}(||\mathbf{s}_i-\mathbf{s}_j||)$$ (here, RBF is the standard radius basis function kernel). The fourth term encodes directional embedding in the relative direction of $j$ in the local coordinate frame $$O_i$$. The $$O^{T}_i O_j $$ describes the orientation encoding of the node $$i$$ with node $$j$$. Finally, we encode within-antibody edges with $$k = 1$$ and antibody-antigen edges with $$k = 2$$.
+where state differences $$\Delta \mathbf{z}_{i j} = \{ \Delta \mathbf{a}_{ij}, \Delta \mathbf{s}_{ij}\}$$, backbone distance $$i-j$$, and spatial distance $$\texttt{RBF}(||\mathbf{s}_i-\mathbf{s}_j||)$$ (here, RBF is the standard radius basis function kernel). The fourth term encodes directional embedding in the relative direction of $$j$$ in the local coordinate frame $$O_i$$. The $$O^{T}_i O_j $$ describes the orientation encoding of the node $$i$$ with node $$j$$. Finally, we encode within-antibody edges with $$k = 1$$ and antibody-antigen edges with $$k = 2$$.
 
 
 ## Conjoined System of ODEs
