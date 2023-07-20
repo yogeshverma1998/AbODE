@@ -45,10 +45,10 @@ De novo generation of new antibodies targeting specific antigens is key to accel
 
 # Neural ODEs
 
-Neural ODEs have been widely applied to Graphs, such as GRAND, PDE-GCN, etc., providing a general way to create novel embedding methods. An ODE defines the dynamics of node updates as,
+Neural ODEs have been widely applied to graphs, such as GRAND, PDE-GCN, etc., providing a general way to create novel embedding methods. An ODE defines the dynamics of node updates as,
 
 <p align="center">
-    $$\dot{\mathbf{z}}_{i}(t) := \frac{\partial \mathbf{z}_i(t)}{\partial t} = f_\theta\big( t, \mathbf{z}_i(t), \mathbf{z}_{\mathcal{N}_i}(t) \big), \qquad i = 1, \ldots, M$$
+    $$\dot{\mathbf{z}}_{i}(t) := \frac{\partial \mathbf{z}_i(t)}{\partial t} = f_\theta\big( t, \mathbf{z}_i(t), \mathbf{z}_{N_i}(t) \big), \qquad i = 1, \ldots, M$$
   </p> 
 
 Where $$\mathbf{z}_{i}$$ are node features, $$f_\theta$$ is parametrized by a NN, and the model essentially learns a differential vector field that guides to create of expressive embeddings of nodes. 
