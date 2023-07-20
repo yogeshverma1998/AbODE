@@ -7,7 +7,7 @@ Please cite our work if you find it useful:
 ```
 
 @InProceedings{pmlr-v202-verma23a,
-  title = 	 {\{A\}b\{ODE\}: Ab initio antibody design using conjoined {ODE}s},
+  title = 	 {{A}b{ODE}: Ab initio antibody design using conjoined {ODE}s},
   author =       {Verma, Yogesh and Heinonen, Markus and Garg, Vikas},
   booktitle = 	 {Proceedings of the 40th International Conference on Machine Learning},
   pages = 	 {35037--35050},
