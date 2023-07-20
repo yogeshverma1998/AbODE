@@ -5,14 +5,22 @@
 Please cite our work if you find it useful:
 
 ```
-@misc{verma2023abode,
-      title={AbODE: Ab Initio Antibody Design using Conjoined ODEs}, 
-      author={Yogesh Verma and Markus Heinonen and Vikas Garg},
-      year={2023},
-      eprint={2306.01005},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG}
+
+@InProceedings{pmlr-v202-verma23a,
+  title = 	 {{A}b{ODE}: Ab initio antibody design using conjoined {ODE}s},
+  author =       {Verma, Yogesh and Heinonen, Markus and Garg, Vikas},
+  booktitle = 	 {Proceedings of the 40th International Conference on Machine Learning},
+  pages = 	 {35037--35050},
+  year = 	 {2023},
+  editor = 	 {Krause, Andreas and Brunskill, Emma and Cho, Kyunghyun and Engelhardt, Barbara and Sabato, Sivan and Scarlett, Jonathan},
+  volume = 	 {202},
+  series = 	 {Proceedings of Machine Learning Research},
+  month = 	 {23--29 Jul},
+  publisher =    {PMLR},
+  pdf = 	 {https://proceedings.mlr.press/v202/verma23a/verma23a.pdf},
+  url = 	 {https://proceedings.mlr.press/v202/verma23a.html}
 }
+
 
 ```
 
